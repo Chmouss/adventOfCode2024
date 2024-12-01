@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -20,10 +21,7 @@ public class Main {
         Scanner fileReader = new Scanner(file);
         while (fileReader.hasNextLine()){
             String data = fileReader.nextLine();
-            //System.out.println(data);
             String[] parts = data.split(" {3}"); //split each line into substrings where there are 3 spaces
-            //System.out.println(parts[0]);
-            //System.out.println(parts[1]);
             list1.add(Integer.parseInt(parts[0])); // add each element
             list2.add(Integer.parseInt(parts[1]));
         }
@@ -35,7 +33,7 @@ public class Main {
 
 
         //**********  PART 1  **********//
-        /*
+
 
         //sorting both lists to have the int in the correct order
         Collections.sort(list1);
@@ -57,13 +55,14 @@ public class Main {
         }
 
         System.out.println("total max distance == " + totalDistance);
-        */
+
 
 
         //**********  PART 2  **********//
 
         int similarityScore = 0;
-
+/*
+        //code pas du tout optimisé
         for(int i = 0; i < list1.size(); i++){
             int nbTimesMultiply = 0;
             for(int j = 0; j < list2.size(); j++){
@@ -71,6 +70,28 @@ public class Main {
                     nbTimesMultiply++;
             }
             similarityScore += (list1.get(i) * nbTimesMultiply);
+        }
+        */
+
+        // pour faire plus optimisé, faire map occurences sur list2, key == nombre et value == nombre d'occurences
+        // comme ça pas besoin de parcourir autant de fois la list2 ....
+
+        HashMap<Integer, Integer> mapOccurences = new HashMap<>();
+        for (int i = 0; i < list2.size(); i++){
+            if(mapOccurences.containsKey(list2.get(i))){
+                mapOccurences.put(list2.get(i), mapOccurences.get(list2.get(i)) +1);
+            } else {
+                mapOccurences.put(list2.get(i), 1);
+            }
+        }
+
+        for(Integer integer : mapOccurences.keySet()){
+            System.out.println(integer);
+        }
+
+        for (int i = 0; i < list1.size(); i++){
+            if(mapOccurences.containsKey(list1.get(i)))
+                similarityScore += (list1.get(i) * mapOccurences.get(list1.get(i)));
         }
 
         System.out.println("similarityScore == " + similarityScore);
